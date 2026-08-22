@@ -1,0 +1,18 @@
+[package]
+name = "imgdupe"
+version = "0.1.0"
+edition = "2021"
+description = "Find duplicate and near-duplicate images by perceptual hash"
+license = "MIT"
+repository = "https://github.com/dkautomation23/imgdupe"
+
+[dependencies]
+image = { version = "0.25", default-features = false, features = ["jpeg", "png", "webp", "gif", "bmp", "tiff"] }
+rayon = "1"
+walkdir = "2"
+clap = { version = "4", features = ["derive"] }
+
+[profile.release]
+opt-level = 3
+lto = true
+strip = true
