@@ -1,5 +1,7 @@
 # imgdupe
 
+[![CI](https://github.com/dkautomation23/imgdupe/actions/workflows/ci.yml/badge.svg)](https://github.com/dkautomation23/imgdupe/actions/workflows/ci.yml)
+
 Finds duplicate and near-duplicate images in a folder — the same picture saved
 twice, re-exported, resized or recompressed — and tells you which copy to keep.
 
