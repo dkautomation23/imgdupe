@@ -97,7 +97,8 @@ cargo build --release
 ./target/release/imgdupe ./photos
 ```
 
-Rust 1.75+, single binary, no runtime.
+Stable Rust, single binary, no runtime. CI builds and tests on 1.98.0; the
+committed `Cargo.lock` is v4, so anything older than Cargo 1.78 cannot read it.
 
 ```bash
 cargo test        # 19 tests: hashing, resize invariance, chaining, ordering
