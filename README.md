@@ -88,7 +88,20 @@ rm -- '.../images/146.jpg'
 Every deduplicator that deletes on its own eventually deletes the wrong file.
 A script can be read, edited, and kept in version control first.
 
-## Build
+## Install
+
+A built binary for Linux, macOS (Apple silicon) and Windows is attached to
+every [release](https://github.com/dkautomation23/imgdupe/releases) — no toolchain,
+no compile step:
+
+```bash
+curl -sSL https://github.com/dkautomation23/imgdupe/releases/latest/download/imgdupe-v1.0.0-x86_64-unknown-linux-gnu.tar.gz | tar xz
+./imgdupe-v1.0.0-x86_64-unknown-linux-gnu/imgdupe --help
+```
+
+Each archive is built and tested on the platform it targets, not cross-compiled.
+
+To build it yourself:
 
 ```bash
 git clone https://github.com/dkautomation23/imgdupe.git
