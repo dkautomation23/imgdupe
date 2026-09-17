@@ -9,7 +9,9 @@ twice, re-exported, resized or recompressed — and tells you which copy to keep
 imgdupe ./photos --threshold 5 --csv duplicates.csv
 ```
 
-31 662 images hashed in 37 seconds on 16 threads. Nothing is ever deleted.
+31 662 JPEGs from a real photo folder hashed in 37 seconds on 16 threads.
+Nothing is ever deleted. There is a [benchmark](#benchmark) in the repository
+that rebuilds its own test folder, so the grouping can be checked, not believed.
 
 ## Why perceptual hashing
 
@@ -111,6 +113,33 @@ cargo test        # 19 tests: hashing, resize invariance, chaining, ordering
 | `--all` | off | print the hash of every file |
 
 Exit code is `1` when duplicates exist, `0` when the folder is clean.
+
+## Benchmark
+
+`bench/generate.py` builds its own test folder with nothing but the standard
+library, so this reproduces on a clean machine:
+
+```bash
+python bench/generate.py 5000          # 6000 PNGs, 500 of them written three ways
+cargo build --release
+./target/release/imgdupe bench/images --threshold 5
+```
+
+Every tenth picture is written three times — full size, half size and
+brightness-shifted — so a correct run must report exactly 500 groups of 3 and
+nothing else. That makes the benchmark a correctness check as well as a timing:
+a grouping bug shows up as the wrong group count, not as a slightly wrong number.
+
+Measured 2026-09-17 on a 16-thread desktop CPU, Windows 11:
+
+| Dataset | Hashing | Grouping | Result |
+| --- | --- | --- | --- |
+| 6 000 synthetic PNGs, 320×240 | 1.8s (3 416/s) | 16 ms | 500 groups of 3, as designed |
+| 31 662 JPEGs, a real photo folder | 37s (855/s) | under 1s | — |
+
+Real photos are larger and decode more slowly, which is the whole difference
+between the two rows: the synthetic figure measures the pipeline, the photo
+figure measures a working day's folder.
 
 ## Honest limits
 
