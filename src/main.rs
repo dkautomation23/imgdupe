@@ -53,6 +53,10 @@ struct Args {
     /// Print the hash of every file, not just the duplicates
     #[arg(long)]
     all: bool,
+
+    /// Overwrite --csv / --delete-script if they already exist
+    #[arg(long)]
+    force: bool,
 }
 
 fn is_image(path: &Path) -> bool {
@@ -156,10 +160,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!();
     }
     if let Some(path) = &args.csv {
-        write_csv(path, &groups)?;
+        write_csv(path, &groups, args.force)?;
     }
     if let Some(path) = &args.delete_script {
-        write_delete_script(path, &groups)?;
+        write_delete_script(path, &groups, args.force)?;
     }
 
     std::process::exit(if groups.is_empty() { 0 } else { 1 });
@@ -247,8 +251,21 @@ fn escape(value: &str) -> String {
     }
 }
 
-fn write_csv(path: &Path, groups: &[Group]) -> std::io::Result<()> {
+/// A rerun must never quietly eat an earlier report - refuse instead of
+/// overwriting unless the caller explicitly asked for that.
+fn refuse_if_exists(path: &Path, force: bool) -> std::io::Result<()> {
+    if !force && path.exists() {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::AlreadyExists,
+            format!("{} already exists; overwrite only with --force", path.display()),
+        ));
+    }
+    Ok(())
+}
+
+fn write_csv(path: &Path, groups: &[Group], force: bool) -> std::io::Result<()> {
     use std::io::Write;
+    refuse_if_exists(path, force)?;
     let mut file = std::fs::File::create(path)?;
     writeln!(file, "group,role,hash,width,height,bytes,max_distance,path")?;
     for (index, group) in groups.iter().enumerate() {
@@ -275,8 +292,9 @@ fn write_csv(path: &Path, groups: &[Group]) -> std::io::Result<()> {
 ///
 /// Every one of these tools that deletes by itself eventually deletes the wrong
 /// file. A script can be read, edited and version-controlled first.
-fn write_delete_script(path: &Path, groups: &[Group]) -> std::io::Result<()> {
+fn write_delete_script(path: &Path, groups: &[Group], force: bool) -> std::io::Result<()> {
     use std::io::Write;
+    refuse_if_exists(path, force)?;
     let mut file = std::fs::File::create(path)?;
     let reclaimable: u64 = groups.iter().map(Group::reclaimable_bytes).sum();
 
