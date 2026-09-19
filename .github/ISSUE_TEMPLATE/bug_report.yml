@@ -1,0 +1,67 @@
+name: Bug report
+description: imgdupe crashed, grouped images wrong, or produced a wrong report.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please don't attach private or copyrighted photos. Describe the
+        images (resolution, format, how they relate to each other) or, for a
+        grouping bug, try to reproduce it with `bench/generate.py`, which
+        builds a synthetic test folder from the standard library only.
+  - type: input
+    id: version
+    attributes:
+      label: imgdupe version
+      description: Output of `imgdupe --version`
+      placeholder: imgdupe 1.0.0
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Linux
+        - macOS (Apple silicon)
+        - Windows
+        - Other (say which, below)
+    validations:
+      required: true
+  - type: input
+    id: command
+    attributes:
+      label: Exact command you ran
+      placeholder: imgdupe ./photos --threshold 5 --csv duplicates.csv
+    validations:
+      required: true
+  - type: dropdown
+    id: formats
+    attributes:
+      label: Image format(s) involved
+      options:
+        - JPEG
+        - PNG
+        - WebP
+        - GIF
+        - BMP
+        - TIFF
+        - Mixed
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+      description: For a grouping bug, say which files should (or shouldn't) have ended up together.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened instead
+      description: Paste the terminal output if you can.
+      render: console
+    validations:
+      required: true
