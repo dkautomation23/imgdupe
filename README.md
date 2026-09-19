@@ -114,7 +114,7 @@ Stable Rust, single binary, no runtime. CI builds and tests on 1.98.0; the
 committed `Cargo.lock` is v4, so anything older than Cargo 1.78 cannot read it.
 
 ```bash
-cargo test        # 19 tests: hashing, resize invariance, chaining, ordering
+cargo test        # 23 tests: hashing, resize invariance, chaining, ordering, overwrite guard
 ```
 
 | Flag | Default | Meaning |
@@ -124,6 +124,7 @@ cargo test        # 19 tests: hashing, resize invariance, chaining, ordering
 | `--min-kb` | 0 | ignore files below this size |
 | `--csv` | – | full group listing for a spreadsheet |
 | `--delete-script` | – | write `rm` commands to review |
+| `--force` | off | overwrite `--csv` / `--delete-script` if they already exist (otherwise refused) |
 | `--all` | off | print the hash of every file |
 
 Exit code is `1` when duplicates exist, `0` when the folder is clean.
